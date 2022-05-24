@@ -117,15 +117,11 @@ readdir(path.join(__dirname, 'styles'), {withFileTypes: true}, (err, files) => {
   });
 });
 
+
+
 function buildHtml(files) {
   let html = '';
-  fs.readFile(path.join(__dirname,  'template.html'), 'utf-8', (err, info) => {
-    if (err) console.log(err);
-    html = info;
-    files = files.filter(file => {
-      let fileTypeArr = file.name.split('.');
-      return fileTypeArr[fileTypeArr.length-1] === 'html';
-    });
+  function replaceHtml() {
     for (let i=0; i<files.length; i++) {
       let fileArr = files[i].name.split('.');
       let replaceData = '{{'+fileArr[0]+'}}';
@@ -133,17 +129,26 @@ function buildHtml(files) {
         if (err) console.log(err);
         html = html.replace(replaceData, data);
         if (i === files.length-1) {
-          fs.writeFile(path.join(__dirname,  'project-dist','index.html'), html, (err) => {
+          if (html.match(/{{(.*?)}}/g))replaceHtml()
+          else fs.writeFile(path.join(__dirname,  'project-dist','index.html'), html, (err) => {
             if (err) console.log(err);
           });
         }
       });
     }
+  }
+  files = files.filter(file => {
+    let fileTypeArr = file.name.split('.');
+    return fileTypeArr[fileTypeArr.length-1] === 'html';
   });
+  fs.readFile(path.join(__dirname,  'template.html'), 'utf-8', (err, info) => {
+    if (err) console.log(err);
+    html = info;
+  });
+  replaceHtml()
 }
 
 readdir(path.join(__dirname,  'components'), {withFileTypes: true}, (err, files) => {
   if (err) return console.log(err);
   return files;
 }).then(files => buildHtml(files));
-
