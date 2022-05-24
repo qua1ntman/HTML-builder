@@ -128,8 +128,6 @@ function buildHtml(files) {
     });
     for (let i=0; i<files.length; i++) {
       let fileArr = files[i].name.split('.');
-      let type = fileArr[fileArr.length-1];
-      console.log(type);
       let replaceData = '{{'+fileArr[0]+'}}';
       fs.readFile(path.join(__dirname,  'components', files[i].name), 'utf8', (err, data) => {
         if (err) console.log(err);
