@@ -43,14 +43,9 @@ function copyCurrFile(file, addWay) {
 }
 
 function addFile (files, addWay) {
-  if (files.length>1) {
     files.forEach(file => {
       copyCurrFile(file, addWay);
     });
-      
-  } else {
-    copyCurrFile(files[0], addWay);
-  }
 }
 
 readdir(path.join(__dirname, 'assets'), {withFileTypes: true}, (err, files) => {
